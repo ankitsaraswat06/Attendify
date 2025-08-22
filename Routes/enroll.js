@@ -13,16 +13,15 @@ route.get("/enroll",(req,res)=>{
 
 
 route.post("/info",upload.single('image'),async (req,res)=>{
-    let {role,name,rollNumber,subject,email,phone} = req.body;
-    if(role === 'Teacher'){
-        Teacher.create({
-            name,
-            subject,
-            email,
-            phone
-        })
-    }
+    let {name,rollNumber} = req.body;
+    console.log(req.file)
     console.log(req.body);
+    const photoBase = req.file ? req.file.buffer.toString('base64') : null;
+    await Student.create({
+        name,
+        rollNumber,
+        image : photoBase
+    })
     res.redirect("/")
 })
 

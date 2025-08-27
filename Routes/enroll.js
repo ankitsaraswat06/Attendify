@@ -21,8 +21,19 @@ route.post("/info",upload.single('image'),async (req,res)=>{
         name,
         rollNumber,
         image : photoBase
-    })
+    });
+    
     res.redirect("/")
+})
+
+route.get("/:roll",async(req,res)=>{
+    let rollNumber = req.params.roll;
+    let student = await Student.findOne({ rollNumber });
+    if (student && student.image) {
+        res.send(`<img src="data:image/jpeg;base64,${student.image}" alt="Student Image"/>`);
+    } else {
+        res.send("Student image not found");
+    }
 })
 
 module.exports = route

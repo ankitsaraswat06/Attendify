@@ -6,7 +6,7 @@ const ejs = require("ejs");
 const path = require("path");
 const Student = require("./Schema/Student");
 const route  = require("./Routes/enroll");
-mongoose.connect('mongodb://127.0.0.1:27017/AttendanceSystem')
+mongoose.connect('mongodb+srv://thegreatkk687:s38A6SoL8JAm3Rc4@cluster0.alfz8fj.mongodb.net/')
 .then(()=>{console.log("DB working fine");})
 .catch((e)=>{console.log(e)});
 

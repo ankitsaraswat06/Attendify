@@ -2,63 +2,129 @@
 <html>
 <head>
     <title>OTP Verification</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .otp-container {
+            background: #fff;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            text-align: center;
+            min-width: 300px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 200px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #result {
+            margin-top: 15px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        #timer {
+            margin-top: 10px;
+            color: #555;
+        }
+    </style>
 </head>
 <body>
-    <h2>OTP Verification</h2>
-    <button onclick="generateOTP()">Generate OTP</button>
-    <br><br>
-    <input type="text" id="otpInput" placeholder="Enter OTP">
-    <button onclick="verifyOTP()">Verify OTP</button>
-    <p id="result"></p>
 
-   <script>
-    let otpGeneratedAt = null;
-    let countdownInterval = null;
+    <div class="otp-container">
+        <h2>OTP Verification</h2>
+        <button onclick="generateOTP()">Generate OTP</button>
+        <br>
+        <input type="text" id="otpInput" placeholder="Enter OTP">
+        <br>
+        <button onclick="verifyOTP()">Verify OTP</button>
+        <p id="timer"></p>
+        <p id="result"></p>
+    </div>
 
-    function generateOTP() {
-        fetch('/generate-otp')
-            .then(res => res.json())
-            .then(data => {
-                alert("OTP generated! (Check server console)");
-                document.getElementById("result").innerText = '';
-                startCountdown(120); // 2 minutes countdown
-            });
-    }
+    <script>
+        let countdownInterval = null;
 
-    function startCountdown(seconds) {
-        clearInterval(countdownInterval); // clear old timers if any
-        let timeLeft = seconds;
+        function generateOTP() {
+            fetch('/generate-otp')
+                .then(res => res.json())
+                .then(data => {
+                    alert("OTP generated! (Check server console)");
+                    document.getElementById("result").innerText = '';
+                    startCountdown(120); // 2 minutes countdown
+                });
+        }
 
-        const timerDisplay = document.getElementById("timer");
-        timerDisplay.innerText = `OTP valid for: ${timeLeft}s`;
+        function startCountdown(seconds) {
+            clearInterval(countdownInterval); // clear old timers if any
+            let timeLeft = seconds;
 
-        countdownInterval = setInterval(() => {
-            timeLeft--;
-            if (timeLeft <= 0) {
-                clearInterval(countdownInterval);
-                timerDisplay.innerText = "OTP expired";
-            } else {
-                timerDisplay.innerText = `OTP valid for: ${timeLeft}s`;
-            }
-        }, 1000);
-    }
+            const timerDisplay = document.getElementById("timer");
+            timerDisplay.innerText = `OTP valid for: ${timeLeft}s`;
 
-    function verifyOTP() {
-        const otp = document.getElementById("otpInput").value;
+            countdownInterval = setInterval(() => {
+                timeLeft--;
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    timerDisplay.innerText = "⏰ OTP expired";
+                } else {
+                    timerDisplay.innerText = `OTP valid for: ${timeLeft}s`;
+                }
+            }, 1000);
+        }
 
-        fetch('/verify-otp', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ otp })
-        })
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById("result").innerText = data.message;
-            });
-    }
-</script>
+        function verifyOTP() {
+            const otp = document.getElementById("otpInput").value;
+
+            fetch('/verify-otp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ otp })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById("result").innerText = data.message;
+                });
+        }
+    </script>
 
 </body>
 </html>

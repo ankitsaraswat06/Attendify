@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OTP Verification</title>
+</head>
+<body>
+    <h2>OTP Verification</h2>
+    <button onclick="generateOTP()">Generate OTP</button>
+    <br><br>
+    <input type="text" id="otpInput" placeholder="Enter OTP">
+    <button onclick="verifyOTP()">Verify OTP</button>
+    <p id="result"></p>
+
+   <script>
+    let otpGeneratedAt = null;
+    let countdownInterval = null;
+
+    function generateOTP() {
+        fetch('/generate-otp')
+            .then(res => res.json())
+            .then(data => {
+                alert("OTP generated! (Check server console)");
+                document.getElementById("result").innerText = '';
+                startCountdown(120); // 2 minutes countdown
+            });
+    }
+
+    function startCountdown(seconds) {
+        clearInterval(countdownInterval); // clear old timers if any
+        let timeLeft = seconds;
+
+        const timerDisplay = document.getElementById("timer");
+        timerDisplay.innerText = `OTP valid for: ${timeLeft}s`;
+
+        countdownInterval = setInterval(() => {
+            timeLeft--;
+            if (timeLeft <= 0) {
+                clearInterval(countdownInterval);
+                timerDisplay.innerText = "OTP expired";
+            } else {
+                timerDisplay.innerText = `OTP valid for: ${timeLeft}s`;
+            }
+        }, 1000);
+    }
+
+    function verifyOTP() {
+        const otp = document.getElementById("otpInput").value;
+
+        fetch('/verify-otp', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ otp })
+        })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("result").innerText = data.message;
+            });
+    }
+</script>
+
+</body>
+</html>

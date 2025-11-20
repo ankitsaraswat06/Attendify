@@ -15,6 +15,9 @@ router.get("/home",(req,res)=>{
   res.render("home", { user: req.user });
 })
 
+router.get("/profile",(req,res)=>{
+  res.render("profile");
+})
 
 
 

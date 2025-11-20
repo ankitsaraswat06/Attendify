@@ -65,10 +65,13 @@ app.use( authRoute);
 
 //  for static files
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static('public/uploads'));
 
 
 // seedSections();
 // seedSimpleUsers();
+
+
 
 app.get('/',(req,res)=>{
     res.redirect('/landing');

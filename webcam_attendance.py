@@ -1,10 +1,19 @@
 
 import face_recognition
+
 import pickle
+
 import cv2
+
+
 import os
+
 import numpy as np
+
 import pandas as pd
+
+
+
 from datetime import datetime
 
 REGISTER_DIR = "registered_faces"

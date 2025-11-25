@@ -22,7 +22,7 @@ def register_face(student_name, img_path):
     
     print(f"Registered {student_name} successfully!")
 
-# CLI usage
+# CLI usage ---
 if __name__ == "__main__":
     student_name = input("Enter student name: ")
     img_path = input("Enter path to student image (e.g., data/student1.jpg): ")

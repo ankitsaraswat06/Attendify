@@ -5,22 +5,24 @@
     <div class="flex justify-between h-16 items-center">
 
       <!-- Brand -->
-      <a href="#" class="text-white font-extrabold text-2xl tracking-wide ">
+      <a href="/" class="text-white font-extrabold text-2xl tracking-wide ">
         Attendify
       </a>
 
       <!-- Desktop Menu -->
-      <div class="hidden md:flex items-center space-x-8 ml-auto">
-        <!-- Login (highlighted link) -->
-        <a href="/login"
-          class="text-gray-100 text-lg font-semibold transition transform hover:scale-115 hover:underline hover:text-white hover:shadow-md">
-          <% if (user) { %>
-            <span class="mr-4">Hi, <%= user.username %></span>
-            <a href="/logout" class="bg-red-500 hover:bg-red-600 px-3 py-1 rounded">Logout</a>
-          <% } else { %>
-              <a href="/login" class="bg-green-500 hover:bg-green-600 px-3 py-1 rounded">Login</a>
-          <% } %>
-        </a>
+      <div class="hidden md:flex items-center space-x-6 ml-auto">
+        <% if (user) { %>
+          <span class="text-white text-lg">Hi, <%= user.username %></span>
+          <a href="/logout"
+            class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-white font-semibold transition transform hover:scale-105">
+            Logout
+          </a>
+        <% } else { %>
+          <a href="/login"
+            class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded text-gray-100 text-lg font-semibold transition transform hover:scale-105">
+            Login
+          </a>
+        <% } %>
       </div>
 
       <!-- Mobile Hamburger -->
@@ -37,10 +39,18 @@
   <!-- Mobile Menu -->
   <div id="mobile-menu" class="hidden md:hidden bg-blue-600 px-4 pb-4 space-y-3">
     
-    <a href="/login"
-      class="block text-gray-100 text-lg font-semibold transition transform hover:scale-115 hover:underline hover:text-white">
-      Login
-    </a>
+    <% if (user) { %>
+      <p class="text-white text-lg mb-2">Hi, <%= user.username %></p>
+      <a href="/logout"
+        class="block bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-white font-semibold transition transform hover:scale-105">
+        Logout
+      </a>
+    <% } else { %>
+      <a href="/login"
+        class="block bg-green-500 hover:bg-green-600 px-4 py-2 rounded text-gray-100 text-lg font-semibold transition transform hover:scale-115 hover:underline hover:text-white">
+        Login
+      </a>
+    <% } %>
   </div>
 </nav>
 
@@ -49,7 +59,9 @@
   const btn = document.getElementById("menu-btn");
   const menu = document.getElementById("mobile-menu");
 
-  btn.addEventListener("click", () => {
-    menu.classList.toggle("hidden");
-  });
+  if (btn && menu) {
+    btn.addEventListener("click", () => {
+      menu.classList.toggle("hidden");
+    });
+  }
 </script>

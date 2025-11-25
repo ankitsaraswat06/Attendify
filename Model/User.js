@@ -32,9 +32,19 @@ const userSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
+  email: {
+    type: String,
+    required: true,
+    trim: true
+  },
   role: {
     type: String,
     required: true
+  },
+  course: {
+    type: String,
+    required: true,
+    trim: true
   },
   photo: {
     type: String,

@@ -4,50 +4,47 @@ const User=require('../../Model/User')
 const multer = require('multer');
 const passport = require('passport');
 const Section = require("../../Model/Section");
+const path = require("path");
+const fs = require("fs");
 
-// configure multer
-const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    cb(null, 'public/uploads'); // folder to save uploaded photos
-  },
-  filename: function(req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + '-' + file.originalname);
-  }
-});
-
-const upload = multer({ storage: storage });
-
-
+const storage = multer.memoryStorage();
+const upload = multer({storage})
 
 // get the signup page route
 router.get("/signup",(req,res)=>{
-    res.render("signup");
+    res.render("signup",{ error: null, formData: {} });
 })
 
 //actually adding the user to db
 // actually adding the user to db
-router.post("/signup", upload.single('photo'), async (req, res) => {
+router.post("/signup", upload.single('photo'),  async (req, res) => {
+    const { email, rollNo, username, role, section, course ,password} = req.body;
+
+
+    const photoBase = req.file ? req.file.buffer.toString('base64') : null;
+    const user = new User({ email, username, rollNo, role, section, course, photo : photoBase });
+    await User.register(user, password);
+    console.log(photoBase);
+    // ✅ after successful signup, go to login page
+    res.redirect("/login");
+})
+
+router.get("/photo/:id", async (req, res) => {
     try {
-        console.log(req.body); // text fields
-        console.log(req.file); // file info
+        let id = Number(req.params.id);
+        // Use findOne instead of find (find returns an array)
+        let user = await User.findOne({ rollNo: id });
 
-        const { email, password, rollNo, username, role, section } = req.body;
-        // const photo = req.file ? req.file.filename : null;
-
-        const photo = req.file ? "/uploads/" + req.file.filename : null;
-
-        const user = new User({ email, username, rollNo, role, section, photo });
-        await User.register(user, password);
-
-        // ✅ after successful signup, go to login page
-        res.redirect("/login");
+        if (!user || !user.photo) {
+            return res.status(404).send("Photo not found");
+        }
+        console.log(user.photo)
+        res.send(`<img src="data:image/jpeg;base64,${user.photo}" alt="User Photo"/>`);
     } catch (err) {
-        console.log("Signup error:", err);
-        res.redirect("/signup"); // back to signup if error
+        console.error(err);
+        res.status(500).send("Server error");
     }
 });
-
 
 
 // get the login page 
@@ -59,9 +56,8 @@ router.get("/login",(req,res)=>{
 router.get("/img/:rollNo", async (req, res) => {
   const user = await User.findOne({ rollNo: req.params.rollNo });
   if (!user || !user.photo) return res.status(404).send("Photo not found");
-  res.set("Content-Type", user.photo.contentType);
-  res.send(user.photo.data);
-// res.json({user});
+  // photo is a URL path like /uploads/filename -> just redirect to it
+  return res.redirect(user.photo);
 });
 
 

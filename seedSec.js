@@ -32,7 +32,7 @@ async function seedSections() {
     };
 
     const sectionData = {
-      section: "2A",
+      section: "3A",
     //   students: students.map(s => s._id),
     //   subjects: subjects.map(sub => sub._id),
       timetable

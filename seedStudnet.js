@@ -10,9 +10,11 @@ async function seedSimpleUsers() {
       {
         rollNo: 101,
         username: "alice",
+        email: "alice@example.com",
         role: "student",
+        course: "Computer Science",
         photo: "https://example.com/photos/alice.jpg",
-        section: "2A",
+        section: "3A",
         attendance: [
           { subject: "Math", date: new Date("2025-09-08"), status: "Present" },
           { subject: "Science", date: new Date("2025-09-08"), status: "Absent" },
@@ -22,7 +24,9 @@ async function seedSimpleUsers() {
       {
         rollNo: 102,
         username: "bob",
+        email: "bob@example.com",
         role: "student",
+        course: "Electronics",
         photo: "https://example.com/photos/bob.jpg",
         section: "2B",
         attendance: [

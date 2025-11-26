@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Attendance System</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f8f9fa;
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        #container {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #output {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e9ecef;
+            border-radius: 8px;
+            min-height: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Automatic Attendance System</h1>
+
+    <div id="container">
+        <button onclick="takeAttendance()">Take Attendance</button>
+
+        <div id="output">
+            <strong>Result will appear here...</strong>
+        </div>
+    </div>
+
+    <script>
+        async function takeAttendance() {
+            document.getElementById("output").innerHTML = "Processing... Please wait.";
+
+            try {
+                const res = await fetch("http://127.0.0.1:8000/take-attendance");
+                const data = await res.json();
+
+                if (data.present && data.present.length > 0) {
+                    document.getElementById("output").innerHTML =
+                        `<strong>Attendance Completed ✔</strong><br><br>
+                         <b>Present Students:</b><br>
+                         ${data.present.map(name => `• ${name}`).join("<br>")}<br><br>
+                         CSV Saved: ${data.csv_file}`;
+                } else {
+                    document.getElementById("output").innerHTML =
+                        "<strong>No faces detected ❌</strong>";
+                }
+
+            } catch (error) {
+                document.getElementById("output").innerHTML =
+                    "❌ Error connecting to backend.";
+            }
+        }
+    </script>
+
+</body>
+</html>

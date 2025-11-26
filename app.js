@@ -55,6 +55,7 @@ app.use((req, res, next) => {
 // import router
 const landingRoute=require('./routes/api/landing');
 const authRoute=require('./routes/api/auth');
+const infoRoute=require('./routes/api/info');
 const seedDB = require("./seedStudnet");
 const seedSections = require("./seedSec");
 const seedSimpleUsers = require("./seedStudnet");
@@ -62,13 +63,16 @@ const seedSimpleUsers = require("./seedStudnet");
 // use imported routes
 app.use( landingRoute);
 app.use( authRoute);
-
+app.use(infoRoute);
 //  for static files
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static('public/uploads'));
 
 
 // seedSections();
 // seedSimpleUsers();
+
+
 
 app.get('/',(req,res)=>{
     res.redirect('/landing');

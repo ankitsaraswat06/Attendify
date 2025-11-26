@@ -27,6 +27,15 @@ const userSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
+  email: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  course: {
+    type: String,
+    required: true
+  },
   username: {
     type: String,
     required: true,
@@ -37,8 +46,8 @@ const userSchema = new mongoose.Schema({
     required: true
   },
   photo: {
-    type: String,
-    required: true
+    data: Buffer,          // ✅ store image as Buffer
+    contentType: String    // ✅ store MIME type (e.g., 'image/jpeg')
   },
   section: {
     type: String
@@ -46,6 +55,7 @@ const userSchema = new mongoose.Schema({
   attendance: [attendanceSchema] // 👈 Embedded attendance records
 });
 
+// Add passport-local-mongoose plugin for authentication
 userSchema.plugin(passportLocalMongoose);
 
 const User = mongoose.model("User", userSchema);

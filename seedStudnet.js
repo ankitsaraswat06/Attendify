@@ -22,7 +22,9 @@ async function seedSimpleUsers() {
       {
         rollNo: 102,
         username: "bob",
+        email: "bob@example.com",
         role: "student",
+        course: "Electronics",
         photo: "https://example.com/photos/bob.jpg",
         section: "2B",
         attendance: [

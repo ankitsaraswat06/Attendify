@@ -4,85 +4,128 @@ const User=require('../../Model/User')
 const multer = require('multer');
 const passport = require('passport');
 const Section = require("../../Model/Section");
+const path = require("path");
+const fs = require("fs");
 
-// configure multer
-const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    cb(null, 'public/uploads'); // folder to save uploaded photos
-  },
-  filename: function(req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + '-' + file.originalname);
-  }
-});
-
-const upload = multer({ storage: storage });
-
-
+const storage = multer.memoryStorage();
+const upload = multer({storage})
 
 // get the signup page route
 router.get("/signup",(req,res)=>{
-    res.render("signup");
+    res.render("signup",{ error: null, formData: {} });
 })
 
-//actually adding the user to db
-router.post("/signup",upload.single('photo'), async (req, res) => { // <-- add next
-    try {
-        console.log(req.body); // text fields
-        console.log(req.file); // file info
-
-        const { email, password, rollNo, username, role } = req.body;
-        const photo = req.file ? req.file.filename : null;
-
-        const user = new User({ email, username, rollNo, role, photo });
-        const newUser = await User.register(user, password);
-
-        req.login(newUser, function(err) {
-            if (err) return next(err);
-            return res.redirect('/home');
-        });
-    } catch (err) {
-        console.log("Signup error:", err);
-        res.redirect("/login");
-    }
+// Signup page
+router.get("/signup", (req, res) => {
+  res.render("signup");
 });
 
 
-// get the login page 
-router.get("/login",(req,res)=>{
-    res.render("login");
-})
+// Signup logic with photo upload
+router.post("/signup", upload.single("photo"), async (req, res) => {
+  try {
+    const { email, password, rollNo, username, role, section ,course } = req.body;
 
+    const userData = { email, username, rollNo, role, section , course };
 
-// actual login via DB
-router.post('/login',
-    passport.authenticate('local', {
-        failureRedirect: '/login',
-    }),
-    (req, res) => {
-       console.log("Logged in user:", req.user);
-        res.redirect('/home');
+    if (req.file) {
+      userData.photo = {
+        data: req.file.buffer,
+        contentType: req.file.mimetype
+      };
     }
 
-)
+    const user = new User(userData);
+    await User.register(user, password);
 
-router.get("/:rno/:section",async (req,res)=>{
-    let {rno,section} = req.params;
-    let sec = await Section.findOne({section});
-    let user = await User.findOne({rollNo:rno});
-    if(!sec || !user) return res.json({msg:"User or Section not found"});
-    console.log(sec.timetable,user)
-    // res.json({sec,user});
-    res.render("profile",{user,sec});
-})
+    res.redirect("/login");
+  } catch (err) {
+    console.error("Signup error:", err);
+    res.redirect("/signup");
+  }
+});
 
-// logout
-router.get('/logout', (req, res) => {
-    req.logout(function(err) {
-        if (err) { return next(err); }
-        res.redirect('/landing');
-    });
-   
-})
+// Login page
+router.get("/login", (req, res) => {
+  res.render("login");
+});
 
-module.exports=router;
+// Serve user photo directly
+router.get("/:roll/photo", async (req, res) => {
+  try {
+    const rollNo = req.params.roll;
+    const user = await User.findOne({ rollNo });
+
+    if (!user || !user.photo) {
+      return res.status(404).send("Photo not found");
+    }
+
+    res.contentType(user.photo.contentType);
+    res.send(user.photo.data);
+  } catch (err) {
+    res.status(500).send("Error retrieving photo");
+  }
+});
+
+// Show user profile (with embedded photo)
+// router.get("/:roll", async (req, res) => {
+//   const rollNo = req.params.roll;
+//   const user = await User.findOne({ rollNo });
+
+//   if (user) {
+//     res.send(`
+//       <h1>${user.username}</h1>
+//       <p>Roll No: ${user.rollNo}</p>
+//       ${
+//         user.photo
+//           ? <img src="/${user.rollNo}/photo" alt="User Photo"/>
+//           : "<p>No photo uploaded</p>"
+//       }
+//     `);
+//   } else {
+//     res.send("User not found");
+//   }
+// });
+
+// Actual login via DB
+router.post(
+  "/login",
+  passport.authenticate("local", { failureRedirect: "/login" }),
+  async (req, res) => {
+    try {
+      const rollNo = req.user.rollNo;
+      const user = await User.findOne({ rollNo });
+      const sec = await Section.findOne({ section: user.section });
+
+      if (!sec || !user) {
+        return res.json({ msg: "User or Section not found" });
+      }
+
+      res.render("profile", { user, sec });
+    } catch (err) {
+      console.error("Error loading profile after login:", err);
+      res.redirect("/home");
+    }
+  }
+);
+
+// Profile by rollNo + section
+router.get("/:rno/:section", async (req, res) => {
+  const { rno, section } = req.params;
+  const sec = await Section.findOne({ section });
+  const user = await User.findOne({ rollNo: rno });
+
+  if (!sec || !user) return res.json({ msg: "User or Section not found" });
+
+  res.render("profile", { user, sec });
+});
+
+// Logout
+router.get("/logout", (req, res) => {
+  req.logout(function (err) {
+    if (err) return next(err);
+    res.redirect("/landing");
+  });
+});
+
+module.exports = router;

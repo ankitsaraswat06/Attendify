@@ -194,7 +194,7 @@
 
       <% if (user.photo) { %>
         <div class="profile-photo">
-          <img src="<%= user.photo %>" alt="Profile photo of <%= user.username %>">
+          <img src="/<%= user.rollNo %>/photo" alt="User Photo"/>
         </div>
       <% } %>
     </div>
@@ -233,46 +233,11 @@
   </div>
 
   <script>
-    document.querySelectorAll(".join-link").forEach(button => {
-      button.addEventListener("click", () => {
-        const newTab = window.open("", "_blank");
-        if (newTab) {
-          newTab.document.write(`
-            <style>
-              body {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                min-height: 100vh;
-                background: linear-gradient(135deg, #1e3c72, #2a5298);
-                color: #fff;
-                margin: 0;
-              }
-              .msg {
-                text-align: center;
-                max-width: 420px;
-              }
-              h1 {
-                font-size: 2rem;
-                margin-bottom: 0.5rem;
-              }
-              p {
-                font-size: 1rem;
-                color: rgba(255,255,255,0.8);
-              }
-            </style>
-            <div class="msg">
-              <h1>Need to build the faculty portal</h1>
-              <p>This feature will be available once the faculty experience is ready.</p>
-            </div>
-          `);
-          newTab.document.close();
-        } else {
-          alert("Need to build the faculty portal");
-        }
-      });
+  document.querySelectorAll(".join-link").forEach(button => {
+    button.addEventListener("click", () => {
+      window.open("http://127.0.0.1:5501/index.html", "_blank");
     });
-  </script>
+  });
+</script>
 </body>
 </html>

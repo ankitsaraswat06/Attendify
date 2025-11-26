@@ -1,4 +1,4 @@
-# Attendify Backend
+# Attendify 
 
 Attendify is a student attendance platform that combines secure authentication, rich student profiles, and a landing page targeted at showcasing its capabilities. This repo contains the Express/MongoDB backend plus the EJS views that render the landing experience and logged-in dashboard.
 

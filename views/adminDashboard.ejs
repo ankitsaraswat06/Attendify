@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin Dashboard - Attendify</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        background: #f1f5f9;
+        margin: 0;
+      }
+
+      .navbar {
+        background: #0c4a6e;
+        color: #fff;
+        padding: 16px 24px;
+        font-size: 20px;
+        font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .navbar a {
+        text-decoration: none;
+        color: white;
+        font-size: 16px;
+        border: 1px solid #fff;
+        padding: 6px 12px;
+        border-radius: 6px;
+        transition: 0.2s;
+      }
+
+      .navbar a:hover {
+        background-color: #083349;
+      }
+
+      .container {
+        width: 95%;
+        max-width: 1100px;
+        margin: 40px auto;
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+      }
+
+      h2 {
+        color: #0f172a;
+      }
+
+      .section {
+        margin-top: 30px;
+      }
+
+      button {
+        background: #0284c7;
+        border: none;
+        color: white;
+        padding: 10px 18px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: 0.25s ease-in-out;
+      }
+
+      button:hover {
+        background-color: #0369a1;
+        transform: translateY(-2px);
+      }
+
+      table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        padding: 12px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+      }
+
+      th {
+        background: #e2e8f0;
+        font-weight: 600;
+      }
+
+      input {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        width: 240px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Top Bar -->
+    <header class="navbar">
+      <span>Admin Dashboard</span>
+      <a href="/logout">Logout</a>
+    </header>
+
+    <div class="container">
+      <!-- System Overview -->
+      <h2>System Overview</h2>
+      <p>Total Students: <strong><%= totalStudents || 0 %></strong></p>
+      <p>Total Teachers: <strong><%= totalTeachers || 0 %></strong></p>
+
+      <!-- Student Management Section -->
+      <div class="section">
+        <h2>Manage Students</h2>
+
+        <form action="/admin/add-student" method="POST">
+          <input
+            type="text"
+            name="student_name"
+            placeholder="Student Name"
+            required
+          />
+          <input type="text" name="roll" placeholder="Roll No." required />
+          <button type="submit">Add Student</button>
+        </form>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Roll No</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if(students) { students.forEach(s => { %>
+            <tr>
+              <td><%= s.name %></td>
+              <td><%= s.roll %></td>
+              <td>
+                <form action="/admin/delete-student/<%= s._id %>" method="POST">
+                  <button type="submit" style="background: #dc2626">
+                    Delete
+                  </button>
+                </form>
+              </td>
+            </tr>
+            <% }) } %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Teacher Management Section -->
+      <div class="section">
+        <h2>Manage Teachers</h2>
+
+        <form action="/admin/add-teacher" method="POST">
+          <input
+            type="text"
+            name="teacher_name"
+            placeholder="Teacher Name"
+            required
+          />
+          <button type="submit">Add Teacher</button>
+        </form>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% if(teachers) { teachers.forEach(t => { %>
+            <tr>
+              <td><%= t.name %></td>
+              <td>
+                <form action="/admin/delete-teacher/<%= t._id %>" method="POST">
+                  <button type="submit" style="background: #dc2626">
+                    Delete
+                  </button>
+                </form>
+              </td>
+            </tr>
+            <% }) } %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Download Attendance -->
+      <div class="section" style="text-align: center">
+        <h2>Full Attendance Data</h2>
+        <a href="/admin/download-csv">
+          <button>Download CSV</button>
+        </a>
+      </div>
+    </div>
+  </body>
+</html>

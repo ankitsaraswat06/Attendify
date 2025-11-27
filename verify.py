@@ -1,68 +1,105 @@
-import face_recognition
-import pickle
 import os
+import pickle
+from datetime import datetime
+
 import numpy as np
 import pandas as pd
-from datetime import datetime
+import face_recognition
+
 
 REGISTER_DIR = "registered_faces"
 ATTENDANCE_FILE = "attendance.csv"
+FACE_TOLERANCE = 0.6
 
-def verify_face(student_name, img_path, tolerance=0.6):
+
+def load_student_encoding(student_name: str):
+    """Load the stored face encoding for a student."""
     encoding_path = os.path.join(REGISTER_DIR, f"{student_name}.pkl")
+
     if not os.path.exists(encoding_path):
-        return False, "Student not registered"
-    
-    with open(encoding_path, "rb") as f:
-        known_encoding = pickle.load(f)
-    
-    image = face_recognition.load_image_file(img_path)
+        return None, "Student not registered."
+
+    with open(encoding_path, "rb") as file:
+        return pickle.load(file), None
+
+
+def get_face_encoding(image_path: str):
+    """Extract face encoding from an image."""
+    if not os.path.exists(image_path):
+        return None, "Image not found."
+
+    image = face_recognition.load_image_file(image_path)
     encodings = face_recognition.face_encodings(image)
-    
-    if len(encodings) == 0:
-        return False, "No face detected in test image"
-    
-    test_encoding = encodings[0]
-    match = face_recognition.compare_faces([known_encoding], test_encoding, tolerance=tolerance)
+
+    if not encodings:
+        return None, "No face detected in image."
+
+    return encodings[0], None
+
+
+def verify_face(student_name: str, image_path: str, tolerance: float = FACE_TOLERANCE):
+    """Compare the stored encoding with the detected face encoding."""
+    known_encoding, error = load_student_encoding(student_name)
+    if error:
+        return False, error
+
+    test_encoding, error = get_face_encoding(image_path)
+    if error:
+        return False, error
+
+    match = face_recognition.compare_faces([known_encoding], test_encoding, tolerance)[0]
     distance = np.linalg.norm(known_encoding - test_encoding)
-    
-    return match[0], f"Distance: {distance:.4f}"
 
-def mark_attendance(student_name):
-    now = datetime.now()
+    return match, f"Similarity Score: {1 - distance:.4f}"
 
-    # Check if the file exists and is non-empty
+
+def init_attendance_file():
+    """Ensure attendance file exists with required structure."""
     if not os.path.exists(ATTENDANCE_FILE) or os.stat(ATTENDANCE_FILE).st_size == 0:
-        # Create a new DataFrame with columns
         df = pd.DataFrame(columns=["Name", "Date", "Time"])
-    else:
-        try:
-            df = pd.read_csv(ATTENDANCE_FILE)
-        except pd.errors.EmptyDataError:
-            # If somehow file is empty, recreate DataFrame
-            df = pd.DataFrame(columns=["Name", "Date", "Time"])
-
-    # Prevent duplicate attendance for the same student on the same day
-    today_str = str(now.date())
-    if not ((df['Name'] == student_name) & (df['Date'] == today_str)).any():
-        df = pd.concat([df, pd.DataFrame([{
-            "Name": student_name,
-            "Date": now.date(),
-            "Time": now.time().strftime("%H:%M:%S")
-        }])], ignore_index=True)
         df.to_csv(ATTENDANCE_FILE, index=False)
-        print(f"Attendance marked for {student_name} at {now.time().strftime('%H:%M:%S')}")
 
 
+def has_marked_today(df, student_name):
+    """Check if attendance is already marked for today."""
+    today = str(datetime.now().date())
+    return ((df['Name'] == student_name) & (df['Date'] == today)).any()
 
 
-# CLI usage
-if __name__ == "__main__":
-    student_name = input("Enter student name: ")
-    img_path = input("Enter path to test image (e.g., data/test1.jpg): ")
-    
-    match, info = verify_face(student_name, img_path)
-    print("Match:", match, info)
-    
+def mark_attendance(student_name: str):
+    """Update attendance for the student if not already marked."""
+    init_attendance_file()
+    df = pd.read_csv(ATTENDANCE_FILE)
+
+    if has_marked_today(df, student_name):
+        return "Attendance already marked today."
+
+    now = datetime.now()
+    entry = {
+        "Name": student_name,
+        "Date": str(now.date()),
+        "Time": now.strftime("%H:%M:%S")
+    }
+
+    df = pd.concat([df, pd.DataFrame([entry])], ignore_index=True)
+    df.to_csv(ATTENDANCE_FILE, index=False)
+
+    return f"Attendance marked: {student_name} at {entry['Time']}"
+
+
+def main():
+    """CLI for testing purposes."""
+    student_name = input("Enter registered student name: ")
+    image_path = input("Enter path to test image: ")
+
+    match, message = verify_face(student_name, image_path)
+    print(message)
+
     if match:
-        mark_attendance(student_name)
+        print(mark_attendance(student_name))
+    else:
+        print("Face verification failed!")
+
+
+if __name__ == "__main__":
+    main()

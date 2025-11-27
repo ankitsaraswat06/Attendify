@@ -1,50 +1,78 @@
 <script src="https://cdn.tailwindcss.com"></script>
 
-<nav class="bg-blue-600 fixed w-full z-10 top-0 left-0 shadow-md border-b border-blue-700 font-sans">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<nav
+  class="bg-gradient-to-r from-blue-600 via-cyan-500 to-green-500 backdrop-blur-lg fixed w-full z-10 top-0 left-0 shadow-2xl border-b border-blue-700/50 font-sans transition-all ease-in"
+>
+  <div class="max-w-7xl mx-auto px-6">
     <div class="flex justify-between h-16 items-center">
-
       <!-- Brand -->
-      <a href="#home" data-scroll="#home" class="text-white font-extrabold text-2xl tracking-wide ">
+      <a
+        href="#home"
+        data-scroll="#home"
+        class="text-white font-extrabold text-3xl tracking-wider drop-shadow-lg hover:scale-110 transition"
+      >
         Attendify
       </a>
 
       <!-- Desktop Menu -->
-      <div class="hidden md:flex items-center space-x-8 ml-auto">
-        
-        <a href="#features" data-scroll="#features"
-          class="text-white text-lg transition transform hover:scale-110 hover:text-gray-200 hover:underline hover:shadow-sm">
+      <div class="hidden md:flex items-center space-x-10 ml-auto">
+        <a
+          href="#features"
+          data-scroll="#features"
+          class="text-white text-lg font-semibold hover:text-gray-200 hover:underline transition transform hover:scale-110 drop-shadow"
+        >
           Features
         </a>
-        <a href="#howitworks" data-scroll="#howitworks"
-          class="text-white text-lg transition transform hover:scale-110 hover:text-gray-200 hover:underline hover:shadow-sm">
+        <a
+          href="#howitworks"
+          data-scroll="#howitworks"
+          class="text-white text-lg font-semibold hover:text-gray-200 hover:underline transition transform hover:scale-110 drop-shadow"
+        >
           How It Works
         </a>
-        <a href="#contact" data-scroll="#contact"
-          class="text-white text-lg transition transform hover:scale-110 hover:text-gray-200 hover:underline hover:shadow-sm">
+        <a
+          href="#contact"
+          data-scroll="#contact"
+          class="text-white text-lg font-semibold hover:text-gray-200 hover:underline transition transform hover:scale-110 drop-shadow"
+        >
           Get in Touch
         </a>
 
-        <!-- Login (highlighted link) -->
         <% if (user) { %>
-          <span class="text-white text-lg mr-4">Hi, <%= user.username %></span>
-          <a href="/logout"
-            class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-white font-semibold transition transform hover:scale-105">
-            Logout
-          </a>
+        <span class="text-white text-lg font-medium px-2 drop-shadow"
+          >Hi, <%= user.username %></span
+        >
+        <a
+          href="/logout"
+          class="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-xl text-white font-semibold transition transform hover:scale-[1.05] shadow-lg"
+        >
+          Logout
+        </a>
         <% } else { %>
-          <a href="/login"
-            class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded text-white text-lg font-semibold transition transform hover:scale-105">
-            Login
-          </a>
+        <a
+          href="/login"
+          class="bg-green-600 hover:bg-green-700 px-5 py-2 rounded-xl text-white text-lg font-semibold transition transform hover:scale-[1.05] shadow-lg"
+        >
+          Login
+        </a>
         <% } %>
       </div>
 
       <!-- Mobile Hamburger -->
       <div class="md:hidden">
-        <button id="menu-btn" class="text-white focus:outline-none">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+        <button id="menu-btn" class="text-white hover:scale-110 transition">
+          <svg
+            class="w-8 h-8 drop-shadow"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16m-7 6h7"
+            ></path>
           </svg>
         </button>
       </div>
@@ -52,40 +80,61 @@
   </div>
 
   <!-- Mobile Menu -->
-  <div id="mobile-menu" class="hidden md:hidden bg-blue-600 px-4 pb-4 space-y-3">
-    <a href="#home" data-scroll="#home"
-      class="block text-white text-lg transition transform hover:scale-110 hover:underline hover:text-gray-200">
+  <div
+    id="mobile-menu"
+    class="hidden md:hidden bg-gradient-to-r from-blue-600 via-cyan-500 to-green-500 px-4 pb-4 space-y-4 backdrop-blur-xl shadow-lg text-center transition"
+  >
+    <a
+      href="#home"
+      data-scroll="#home"
+      class="block text-white text-lg font-semibold hover:underline hover:text-gray-200 transition transform hover:scale-110"
+    >
       Home
     </a>
-    <a href="#features" data-scroll="#features"
-      class="block text-white text-lg transition transform hover:scale-110 hover:underline hover:text-gray-200">
+    <a
+      href="#features"
+      data-scroll="#features"
+      class="block text-white text-lg font-semibold hover:underline hover:text-gray-200 transition transform hover:scale-110"
+    >
       Features
     </a>
-    <a href="#howitworks" data-scroll="#howitworks"
-      class="block text-white text-lg transition transform hover:scale-110 hover:underline hover:text-gray-200">
+    <a
+      href="#howitworks"
+      data-scroll="#howitworks"
+      class="block text-white text-lg font-semibold hover:underline hover:text-gray-200 transition transform hover:scale-110"
+    >
       How It Works
     </a>
-    <a href="#contact" data-scroll="#contact"
-      class="block text-white text-lg transition transform hover:scale-110 hover:underline hover:text-gray-200">
+    <a
+      href="#contact"
+      data-scroll="#contact"
+      class="block text-white text-lg font-semibold hover:underline hover:text-gray-200 transition transform hover:scale-110"
+    >
       Contact Us
     </a>
+
     <% if (user) { %>
-      <span class="block text-white text-lg">Hi, <%= user.username %></span>
-      <a href="/logout"
-        class="block bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-white font-semibold transition transform hover:scale-105">
-        Logout
-      </a>
+    <span class="block text-white text-lg font-medium pt-2 drop-shadow">
+      Hi, <%= user.username %>
+    </span>
+    <a
+      href="/logout"
+      class="block bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl text-white font-semibold transition transform hover:scale-105 shadow-md"
+    >
+      Logout
+    </a>
     <% } else { %>
-      <a href="/login"
-        class="block bg-green-500 hover:bg-green-600 px-4 py-2 rounded text-white text-lg font-semibold transition transform hover:scale-105">
-        Login
-      </a>
+    <a
+      href="/login"
+      class="block bg-green-600 hover:bg-green-700 px-4 py-2 rounded-xl text-white text-lg font-semibold transition transform hover:scale-105 shadow-md"
+    >
+      Login
+    </a>
     <% } %>
   </div>
 </nav>
 
 <script>
-  // Toggle mobile menu
   const btn = document.getElementById("menu-btn");
   const menu = document.getElementById("mobile-menu");
 
@@ -93,9 +142,9 @@
     menu.classList.toggle("hidden");
   });
 
-  // Smooth scrolling for in-page nav links
+  // Smooth scroll
   const scrollLinks = document.querySelectorAll("[data-scroll]");
-  scrollLinks.forEach(link => {
+  scrollLinks.forEach((link) => {
     link.addEventListener("click", (event) => {
       const targetSelector = link.getAttribute("data-scroll");
       const targetSection = document.querySelector(targetSelector);
@@ -103,7 +152,7 @@
       if (targetSection) {
         event.preventDefault();
         targetSection.scrollIntoView({ behavior: "smooth" });
-        menu.classList.add("hidden"); // close mobile menu after selection
+        menu.classList.add("hidden");
       }
     });
   });

@@ -5,66 +5,70 @@
   <title>Attendify | Signup</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gradient-to-r from-cyan-400 via-blue-500 to-teal-400 min-h-screen flex items-center justify-center font-sans">
 
-  <div class="bg-white shadow-xl rounded-2xl w-full max-w-2xl p-10">
+<body class="bg-gradient-to-br from-blue-500 via-teal-500 to-cyan-400 min-h-screen flex items-center justify-center font-sans">
+
+  <div class="bg-white/95 backdrop-blur-lg shadow-2xl rounded-3xl w-full max-w-3xl p-10 animate-fade-in">
+
     <!-- Header -->
-    <h2 class="text-3xl font-bold text-center text-blue-600 mb-6">
+    <h2 class="text-4xl font-extrabold text-center text-blue-700 drop-shadow mb-2">
       Create Your Attendify Account
     </h2>
+    <p class="text-center text-gray-600 mb-6 text-sm">
+      Join the secure attendance platform
+    </p>
 
     <!-- Signup Form -->
     <form action="/signup" method="POST" enctype="multipart/form-data" class="grid grid-cols-2 gap-6">
       <% const data = formData || {}; %>
 
       <% if (error) { %>
-        <div class="col-span-2 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl">
+        <div class="col-span-2 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-center font-medium">
           <%= error %>
         </div>
       <% } %>
       
       <!-- Name -->
-      <div class="col-span-1">
-        <label class="block text-gray-700 font-medium">Username</label>
-        <input type="text" name="username" value="<%= data.username || '' %>" required
-          class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <div>
+        <label class="block text-gray-700 font-medium mb-1">Username</label>
+        <input type="text" name="username" value="<%= data.username || '' %>" required minlength="3" placeholder="Enter full name"
+          class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-[3px] focus:ring-blue-400 transition">
       </div>
 
-      <!-- Roll No -->
-      <div class="col-span-1">
-        <label class="block text-gray-700 font-medium">Roll Number</label>
-        <input type="number" name="rollNo" value="<%= data.rollNo || '' %>" required
-          class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <!-- Roll Number -->
+      <div>
+        <label class="block text-gray-700 font-medium mb-1">Roll Number</label>
+        <input type="number" name="rollNo" value="<%= data.rollNo || '' %>" required min="1" placeholder="Eg: 12022001"
+          class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-[3px] focus:ring-blue-400 transition">
       </div>
 
       <!-- Section -->
-      <div class="col-span-1">
-        <label class="block text-gray-700 font-medium">Section</label>
-        <input type="text" name="section" value="<%= data.section || '' %>" required
-          class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <div>
+        <label class="block text-gray-700 font-medium mb-1">Section</label>
+        <input type="text" name="section" value="<%= data.section || '' %>" required placeholder="A/B/C etc."
+          class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-[3px] focus:ring-blue-400 transition">
       </div>
 
       <!-- Course -->
-      <div class="col-span-1">
-        <label class="block text-gray-700 font-medium">Course</label>
-        <input type="text" name="course" value="<%= data.course || '' %>" required
-          class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <div>
+        <label class="block text-gray-700 font-medium mb-1">Course</label>
+        <input type="text" name="course" value="<%= data.course || '' %>" required placeholder="Eg: B.Tech CSE"
+          class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-[3px] focus:ring-blue-400 transition">
       </div>
-
 
       <!-- Email -->
       <div class="col-span-2">
-        <label class="block text-gray-700 font-medium">Email</label>
-        <input type="email" name="email" value="<%= data.email || '' %>" required
-          class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <label class="block text-gray-700 font-medium mb-1">Email</label>
+        <input type="email" name="email" value="<%= data.email || '' %>" required placeholder="your@email.com"
+          class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-[3px] focus:ring-blue-400 transition">
       </div>
 
       <!-- Role -->
-      <div class="col-span-1">
-        <label class="block text-gray-700 font-medium">Role</label>
+      <div>
+        <label class="block text-gray-700 font-medium mb-1">Role</label>
         <select name="role" required
-          class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <option value="">Select role</option>
+          class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-[3px] focus:ring-blue-400 transition">
+          <option value="" disabled selected>Select role</option>
           <option value="student" <%= data.role === 'student' ? 'selected' : '' %>>Student</option>
           <option value="teacher" <%= data.role === 'teacher' ? 'selected' : '' %>>Teacher</option>
           <option value="admin" <%= data.role === 'admin' ? 'selected' : '' %>>Admin</option>
@@ -72,34 +76,45 @@
       </div>
 
       <!-- Password -->
-      <div class="col-span-1">
-        <label class="block text-gray-700 font-medium">Password</label>
-        <input type="password" name="password" required
-          class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+      <div>
+        <label class="block text-gray-700 font-medium mb-1">Password</label>
+        <input type="password" name="password" required minlength="5" placeholder="Create a strong password"
+          class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-[3px] focus:ring-blue-400 transition">
       </div>
 
-      <!-- Photo Upload -->
+      <!-- Photo -->
       <div class="col-span-2">
-        <label class="block text-gray-700 font-medium">Upload Photo</label>
+        <label class="block text-gray-700 font-medium mb-1">Upload Photo</label>
         <input type="file" name="photo" accept="image/*" required
-          class="w-full px-4 py-2 border rounded-xl bg-gray-50">
+          class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl bg-gray-50 focus:ring-[3px] focus:ring-blue-400 transition">
       </div>
 
-      <!-- Submit -->
+      <!-- Submit Button -->
       <div class="col-span-2">
         <button type="submit"
-          class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl shadow hover:bg-blue-700 transition">
+          class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl shadow-lg hover:bg-blue-700 hover:shadow-xl transition transform hover:-translate-y-0.5">
           Sign Up
         </button>
       </div>
     </form>
 
     <!-- Login Link -->
-    <p class="text-center text-gray-600 text-sm mt-6">
+    <p class="text-center text-gray-600 text-sm mt-7">
       Already have an account?
-      <a href="/login" class="text-blue-600 hover:underline">Login here</a>
+      <a href="/login" class="text-blue-700 font-semibold hover:underline">Login here</a>
     </p>
   </div>
 
 </body>
+
+<style>
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in {
+    animation: fade-in 0.6s ease-out;
+  }
+</style>
+
 </html>

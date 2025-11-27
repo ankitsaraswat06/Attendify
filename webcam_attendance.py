@@ -30,7 +30,11 @@ for file in os.listdir(REGISTER_DIR):
 print(f"Loaded {len(encodings_db)} registered students.")
 
 # Initialize webcam
+#new change
+
+# new change in video capture
 video_capture = cv2.VideoCapture(0)
+
 
 def mark_attendance(student_name):
     now = datetime.now()
